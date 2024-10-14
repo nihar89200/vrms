@@ -2,18 +2,18 @@
 session_start();
 include('includes/dbconnection.php');
 error_reporting(0);
-if (strlen($_SESSION['vrmsuid']==0)) {
+if (strlen($_SESSION['vrmsaid']==0)) {
   header('location:logout.php');
   } else{
 if(isset($_POST['submit']))
 {
-$uid=$_SESSION['vrmsuid'];
+$adminid=$_SESSION['vrmsaid'];
 $cpassword=md5($_POST['currentpassword']);
 $newpassword=md5($_POST['newpassword']);
-$query=mysqli_query($con,"select ID from tbluser where ID='$uid' and   Password='$cpassword'");
+$query=mysqli_query($con,"select ID from tbladmin where ID='$adminid' and   Password='$cpassword'");
 $row=mysqli_fetch_array($query);
 if($row>0){
-$ret=mysqli_query($con,"update tbluser set Password='$newpassword' where ID='$uid'");
+$ret=mysqli_query($con,"update tbladmin set Password='$newpassword' where ID='$adminid'");
 $msg= "Your password successully changed"; 
 } else {
 
@@ -25,33 +25,33 @@ $msg="Your current password is wrong";
 }
 
   
-?>
+  ?>
 <!DOCTYPE html>
-<html class="no-js" lang="zxx">
+<html lang="en">
 
 <head>
-    
-    <title>Vehicle Rental Management System || Change Password</title>
+    <title>Vehicle Rental Management Sysytem | Change Password</title>
+   
 
-    <!--=== Bootstrap CSS ===-->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-    <!--=== Slicknav CSS ===-->
-    <link href="assets/css/plugins/slicknav.min.css" rel="stylesheet">
-    <!--=== Magnific Popup CSS ===-->
-    <link href="assets/css/plugins/magnific-popup.css" rel="stylesheet">
-    <!--=== Owl Carousel CSS ===-->
-    <link href="assets/css/plugins/owl.carousel.min.css" rel="stylesheet">
-    <!--=== Gijgo CSS ===-->
-    <link href="assets/css/plugins/gijgo.css" rel="stylesheet">
-    <!--=== FontAwesome CSS ===-->
-    <link href="assets/css/font-awesome.css" rel="stylesheet">
-    <!--=== Theme Reset CSS ===-->
-    <link href="assets/css/reset.css" rel="stylesheet">
-    <!--=== Main Style CSS ===-->
-    <link href="style.css" rel="stylesheet">
-    <!--=== Responsive CSS ===-->
-    <link href="assets/css/responsive.css" rel="stylesheet">
+    <!-- Style-sheets -->
+    <!-- Bootstrap Css -->
+    <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- Bootstrap Css -->
+    <!-- Common Css -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!--// Common Css -->
+    <!-- Nav Css -->
+    <link rel="stylesheet" href="css/style4.css">
+    <!--// Nav Css -->
+    <!-- Fontawesome Css -->
+    <link href="css/fontawesome-all.css" rel="stylesheet">
+    <!--// Fontawesome Css -->
+    <!--// Style-sheets -->
 
+    <!--web-fonts-->
+    <link href="//fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!--//web-fonts-->
     <script type="text/javascript">
 function checkpass()
 {
@@ -67,128 +67,130 @@ return true;
 </script>
 </head>
 
-<body class="loader-active">
+<body>
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+       <?php include_once('includes/sidebar.php');?>
 
-    <!--== Preloader Area Start ==-->
-    <div class="preloader">
-        <div class="preloader-spinner">
-            <div class="loader-content">
-                <img src="assets/img/preloader.gif" alt="JSOFT">
-            </div>
-        </div>
-    </div>
-    <!--== Preloader Area End ==-->
+        <!-- Page Content Holder -->
+        <div id="content">
+            <!-- top-bar -->
+       <?php include_once('includes/header.php');?>
+            <!--// top-bar -->
 
-   <?php include_once('includes/header.php');?>
+            <!-- main-heading -->
+            <h2 class="main-title-w3layouts mb-2 text-center"> Change Password</h2>
+            <!--// main-heading -->
 
-    <!--== Page Title Area Start ==-->
-    <section id="page-title-area" class="section-padding overlay">
-        <div class="container">
-            <div class="row">
-                <!-- Page Title Start -->
-                <div class="col-lg-12">
-                    <div class="section-title  text-center">
-                        <h2>Change Password</h2>
-                        <span class="title-line"><i class="fa fa-car"></i></span>
-                    </div>
-                </div>
-                <!-- Page Title End -->
-            </div>
-        </div>
-    </section>
-    <!--== Page Title Area End ==-->
+            <!-- Forms content -->
+            <section class="forms-section">
 
-    <!--== Contact Page Area Start ==-->
-    <div class="contact-page-wrao section-padding">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 m-auto">
-                    <div class="contact-form">
-                        <?php
-$uid=$_SESSION['vrmsuid'];
-$ret=mysqli_query($con,"select * from  tbluser where ID='$uid'");
+               
+                <!-- Forms-3 -->
+                <div class="outer-w3-agile mt-3">
+                    <h4 class="tittle-w3-agileits mb-4"> Change Password</h4>
+
+   <?php
+$adminid=$_SESSION['vrmsaid'];
+$ret=mysqli_query($con,"select * from tbladmin where ID='$adminid'");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-                        <form class="mb-0" method="post" name="changepassword" onsubmit="return checkpass();">
-                            <p style="font-size:16px; color:red" align="center"> <?php if($msg){
+                    <form action="#" method="post" name="changepassword" onsubmit="return checkpass();">
+                        <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
   }  ?> </p>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="name-input">
-                                        <input type="password" name="currentpassword" id="currentpassword"  required='true' placeholder="Current Password">
-                                    </div>
-                                </div></div>
-                          <div class="row" style="padding-top: 20px">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="email-input">
-                                        <input type="password" name="newpassword" id="newpassword" required='true' placeholder="New Password">
-                                    </div>
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Current Password:</label>
+                                
+                                <input type="password" name="currentpassword" class=" form-control" required= "true" value="">
                             </div>
-
-                            <div class="row">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="website-input">
-                                         <input type="password" name="confirmpassword" id="confirmpassword" value="" required='true' placeholder="Confirm Password">
-                                    </div>
-                                </div>
-
-                                 </div>
-<?php }?>
-                            <div class="input-submit">
-                                <button type="submit" name="submit">Change</button>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">New Password:</label>
+                                <input type="password" name="newpassword" class="form-control" value="">
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Confirm Password:</label>
+                            <input type="password" name="confirmpassword" class="form-control" value="">
+                        </div>
+                       
+                        <?php } ?>
+                        <button type="submit" class="btn btn-primary" name="submit">Change</button>
+                    </form>
                 </div>
-            </div>
+              
+            </section>
+
+            <!--// Forms content -->
+
+           <?php include_once('includes/footer.php');?>
+
         </div>
     </div>
-    <!--== Contact Page Area End ==-->
 
-   
-   <?php include_once('includes/footer.php');?>
-    <!--== Scroll Top Area Start ==-->
-    <div class="scroll-top">
-        <img src="assets/img/scroll-top.png" alt="JSOFT">
-    </div>
-    <!--== Scroll Top Area End ==-->
 
-    <!--=======================Javascript============================-->
-    <!--=== Jquery Min Js ===-->
-    <script src="assets/js/jquery-3.2.1.min.js"></script>
-    <!--=== Jquery Migrate Min Js ===-->
-    <script src="assets/js/jquery-migrate.min.js"></script>
-    <!--=== Popper Min Js ===-->
-    <script src="assets/js/popper.min.js"></script>
-    <!--=== Bootstrap Min Js ===-->
-    <script src="assets/js/bootstrap.min.js"></script>
-    <!--=== Gijgo Min Js ===-->
-    <script src="assets/js/plugins/gijgo.js"></script>
-    <!--=== Vegas Min Js ===-->
-    <script src="assets/js/plugins/vegas.min.js"></script>
-    <!--=== Isotope Min Js ===-->
-    <script src="assets/js/plugins/isotope.min.js"></script>
-    <!--=== Owl Caousel Min Js ===-->
-    <script src="assets/js/plugins/owl.carousel.min.js"></script>
-    <!--=== Waypoint Min Js ===-->
-    <script src="assets/js/plugins/waypoints.min.js"></script>
-    <!--=== CounTotop Min Js ===-->
-    <script src="assets/js/plugins/counterup.min.js"></script>
-    <!--=== YtPlayer Min Js ===-->
-    <script src="assets/js/plugins/mb.YTPlayer.js"></script>
-    <!--=== Magnific Popup Min Js ===-->
-    <script src="assets/js/plugins/magnific-popup.min.js"></script>
-    <!--=== Slicknav Min Js ===-->
-    <script src="assets/js/plugins/slicknav.min.js"></script>
+    <!-- Required common Js -->
+    <script src='js/jquery-2.2.3.min.js'></script>
+    <!-- //Required common Js -->
 
-    <!--=== Mian Js ===-->
-    <script src="assets/js/main.js"></script>
+    <!-- Sidebar-nav Js -->
+    <script>
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+    <!--// Sidebar-nav Js -->
 
+    <!-- Validation Script -->
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    <!--// Validation Script -->
+
+    <!-- dropdown nav -->
+    <script>
+        $(document).ready(function () {
+            $(".dropdown").hover(
+                function () {
+                    $('.dropdown-menu', this).stop(true, true).slideDown("fast");
+                    $(this).toggleClass('open');
+                },
+                function () {
+                    $('.dropdown-menu', this).stop(true, true).slideUp("fast");
+                    $(this).toggleClass('open');
+                }
+            );
+        });
+    </script>
+    <!-- //dropdown nav -->
+
+    <!-- Js for bootstrap working-->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- //Js for bootstrap working -->
 </body>
-
 </html>
 <?php }  ?>
