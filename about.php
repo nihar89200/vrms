@@ -1,32 +1,15 @@
 <?php
 session_start();
 error_reporting(0);
+
 include('includes/dbconnection.php');
-error_reporting(0);
-
-if(isset($_POST['submit']))
-  {
-    $contactno=$_SESSION['contactno'];
-    $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
-
-        $query=mysqli_query($con,"update tbluser set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-   if($query)
-   {
-echo "<script>alert('Password successfully changed');</script>";
-session_destroy();
-   }
-  
-  }
-  ?>
-
+?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 <head>
    
-
-    <title>Vehicle Rental Management System || Reset Password</title>
+    <title>Vehicle Rental Management System - About Us</title>
 
     <!--=== Bootstrap CSS ===-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -52,19 +35,6 @@ session_destroy();
         <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript">
-function checkpass()
-{
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
-{
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
-}
-return true;
-} 
-
-</script>
 </head>
 
 <body class="loader-active">
@@ -78,8 +48,7 @@ return true;
         </div>
     </div>
     <!--== Preloader Area End ==-->
-
-   <?php include_once('includes/header.php');?>
+<?php include_once('includes/header.php');?>
 
     <!--== Page Title Area Start ==-->
     <section id="page-title-area" class="section-padding overlay">
@@ -88,9 +57,8 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Reset Password</h2>
+                        <h2>About US</h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     </div>
                 </div>
                 <!-- Page Title End -->
@@ -99,51 +67,58 @@ return true;
     </section>
     <!--== Page Title Area End ==-->
 
-    <!--== Login Page Content Start ==-->
-    <section id="lgoin-page-wrap" class="section-padding">
+    <!--== About Page Content Start ==-->
+    <section id="about-area" class="section-padding">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-8 m-auto">
-                	<div class="login-page-content">
-                		<div class="login-form">
-                			<h3>Welcome Back!</h3>
-							<form action="" method="post" name="changepassword" onsubmit="return checkpass();" id="changepassword">
-                                <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-								<div class="username">
-									<input type="password"placeholder="New Password" name="newpassword" id="newpassword" required="true">
+                <!-- Section Title Start -->
+                <div class="col-lg-12">
+                    <div class="section-title  text-center">
+                        <h2>About us</h2>
+                        <span class="title-line"><i class="fa fa-car"></i></span>
 
-								</div>
-								<div class="password">
-									<input type="password" placeholder="Confirm Password" name="confirmpassword" id="confirmpassword" required="true">
-								</div>
-								<div class="log-btn">
-									<button type="submit" name="submit"><i class="fa fa-sign-in"></i> Reset</button>
-								</div>
-							</form>
-                		</div>
-                		
-                		<div class="login-other">
-                			<span class="or">or</span>
-                			<a href="loginb.php" class="login-with-btn facebook"> login</a>
-                			</div>
-                		<div class="create-ac">
-                			<p>Don't have an account? <a href="register.php">Sign Up</a></p>
-                		</div>
-                		<div class="login-menu">
-                			<a href="about.php">About</a>
-                			<span>|</span>
-                			<a href="contact.php">Contact</a>
-                		</div>
-                	</div>
+                    </div>
                 </div>
-        	</div>
+                <!-- Section Title End -->
+            </div>
+
+            <div class="row">
+                <!-- About Content Start -->
+                <div class="col-lg-6">
+                    <?php 
+ $query=mysqli_query($con,"select * from  tblpage where PageType='aboutus'");
+ while ($row=mysqli_fetch_array($query)) {
+
+
+ ?>
+                    <div class="display-table">
+                        <div class="display-table-cell">
+                            <div class="about-content">
+                                <h4><?php  echo $row['PageTitle'];?></h4>
+                                <p><?php  echo $row['PageDescription'];?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+                <!-- About Content End -->
+
+                <!-- About Video Start -->
+                <div class="col-lg-6">
+                    <div class="about-image">
+                        <img src="assets/img/car/car+bike.jpg" alt="JSOFT" height="900" width="900">
+                    </div>
+                </div>
+                <!-- About Video End -->
+            </div>
+
         </div>
     </section>
-    <!--== Login Page Content End ==-->
+    <!--== About Page Content End ==-->
+    
 
-  <?php include_once('includes/footer.php');?>
+
+    <?php include_once('includes/footer.php');?>
 
     <!--== Scroll Top Area Start ==-->
     <div class="scroll-top">

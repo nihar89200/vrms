@@ -1,32 +1,45 @@
-<?php
+
+<?php 
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-error_reporting(0);
-
 if(isset($_POST['submit']))
   {
-    $contactno=$_SESSION['contactno'];
-    $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
+    $fname=$_POST['fname'];
+    $lname=$_POST['lname'];
+    $email=$_POST['email'];
+    $mobno=$_POST['mobilenumber'];
+    $password=md5($_POST['password']);
+    $aadhar=$_POST['aadhar_no'];
+    $driv=$_POST['driving_license_no'];
+   
 
-        $query=mysqli_query($con,"update tbluser set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-   if($query)
-   {
-echo "<script>alert('Password successfully changed');</script>";
-session_destroy();
-   }
-  
+
+    $ret=mysqli_query($con, "select Email from tbluser where Email='$email' || MobileNumber='$mobno'");
+    $result=mysqli_fetch_array($ret);
+    if($result>0){
+$msg="This email or Contact Number already associated with another account";
+    }
+    else{
+    $query=mysqli_query($con, "insert into tbluser(FirstName,LastName,Email,MobileNumber,Password,aadhar_no,driving_license_no) value('$fname','$lname','$email','$mobno','$password','$aadhar','$driv')");
+    if ($query) {
+        
+    $msg="You have successfully registered";
   }
-  ?>
+  else
+    {
+     $msg="Something Went Wrong. Please try again";
+    }
+}
 
+}
+ ?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 <head>
-   
-
-    <title>Vehicle Rental Management System || Reset Password</title>
+    
+    <title>Vehicle Rental Management System || Sign Up</title>
 
     <!--=== Bootstrap CSS ===-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -52,19 +65,6 @@ session_destroy();
         <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript">
-function checkpass()
-{
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
-{
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
-}
-return true;
-} 
-
-</script>
 </head>
 
 <body class="loader-active">
@@ -88,9 +88,8 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Reset Password</h2>
+                        <h2>Sign Up</h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     </div>
                 </div>
                 <!-- Page Title End -->
@@ -103,33 +102,48 @@ return true;
     <section id="lgoin-page-wrap" class="section-padding">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-8 m-auto">
+                <div class="col-lg-5 col-md-8 m-auto">
                 	<div class="login-page-content">
                 		<div class="login-form">
-                			<h3>Welcome Back!</h3>
-							<form action="" method="post" name="changepassword" onsubmit="return checkpass();" id="changepassword">
+                			<h3>Sign Up</h3>
+							<form action="" method="post" name="signup">
                                 <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
   }  ?> </p>
+								<div class="name">
+									<div class="row">
+										<div class="col-md-6">
+											<input type="text" placeholder="First Name" name="fname" required="true">
+										</div>
+										<div class="col-md-6">
+											<input type="text" placeholder="Last Name" name="lname" required="true">
+										</div>
+									</div>
+								</div>
 								<div class="username">
-									<input type="password"placeholder="New Password" name="newpassword" id="newpassword" required="true">
-
+									<input type="email" placeholder="Email" name="email" required="true">
+								</div>
+								<div class="username">
+									<input type="text" placeholder="Mobile Number" name="mobilenumber" maxlength="10" pattern="[0-9]+" required="true">
 								</div>
 								<div class="password">
-									<input type="password" placeholder="Confirm Password" name="confirmpassword" id="confirmpassword" required="true">
+									<input type="password" placeholder="Password" name="password" required="true">
+								</div>
+                                <div class="aadhar">
+									<input type="text" placeholder="aadhar_no" name="aadhar_no" required="true">
+								</div>
+                                <div class="driving_license_no">
+									<input type="text" placeholder="driving_license_no" name="driving_license_no" required="true">
 								</div>
 								<div class="log-btn">
-									<button type="submit" name="submit"><i class="fa fa-sign-in"></i> Reset</button>
+									<button type="submit" name="submit"><i class="fa fa-check-square"></i> Sign Up</button>
 								</div>
 							</form>
                 		</div>
                 		
-                		<div class="login-other">
-                			<span class="or">or</span>
-                			<a href="loginb.php" class="login-with-btn facebook"> login</a>
-                			</div>
+                	
                 		<div class="create-ac">
-                			<p>Don't have an account? <a href="register.php">Sign Up</a></p>
+                			<p>Have an account? <a href="login.php">Sign In</a></p>
                 		</div>
                 		<div class="login-menu">
                 			<a href="about.php">About</a>
@@ -143,7 +157,7 @@ return true;
     </section>
     <!--== Login Page Content End ==-->
 
-  <?php include_once('includes/footer.php');?>
+   <?php include_once('includes/footer.php');?>
 
     <!--== Scroll Top Area Start ==-->
     <div class="scroll-top">

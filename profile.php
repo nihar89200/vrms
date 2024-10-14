@@ -1,32 +1,44 @@
-<?php
+<?php 
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-error_reporting(0);
-
+if (strlen($_SESSION['vrmsuid']==0)) {
+  header('location:logout.php');
+  } else{
 if(isset($_POST['submit']))
   {
-    $contactno=$_SESSION['contactno'];
-    $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
+    $uid=$_SESSION['vrmsuid'];
+    $fname=$_POST['fname'];
+    $lname=$_POST['lname'];
+    $mobilenumber=$_POST['mobilenumber'];
+    $email=$_POST['email'];
+    $aadhar=$_POST['aadhar_no'];
+    $driv=$_POST['driving_lincense_no'];
 
-        $query=mysqli_query($con,"update tbluser set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-   if($query)
-   {
-echo "<script>alert('Password successfully changed');</script>";
-session_destroy();
-   }
-  
+    
+   
+
+    $query=mysqli_query($con, "update tbluser set FirstName='$fname',LastName='$lname', MobileNumber='$mobilenumber' where ID='$uid'");
+
+
+    if ($query) {
+    $msg="Your profile has been updated";
   }
-  ?>
+  else
+    {
+      $msg="Something Went Wrong. Please try again";
+    }
+
+}
+
+ ?>
 
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 <head>
-   
-
-    <title>Vehicle Rental Management System || Reset Password</title>
+    
+    <title>Vehicle Rental Management System ||Profile</title>
 
     <!--=== Bootstrap CSS ===-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -48,23 +60,6 @@ session_destroy();
     <link href="assets/css/responsive.css" rel="stylesheet">
 
 
-    <!--[if lt IE 9]>
-        <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript">
-function checkpass()
-{
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
-{
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
-}
-return true;
-} 
-
-</script>
 </head>
 
 <body class="loader-active">
@@ -88,7 +83,7 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Reset Password</h2>
+                        <h2>Profile</h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     </div>
@@ -99,52 +94,72 @@ return true;
     </section>
     <!--== Page Title Area End ==-->
 
-    <!--== Login Page Content Start ==-->
-    <section id="lgoin-page-wrap" class="section-padding">
+    <!--== Contact Page Area Start ==-->
+    <div class="contact-page-wrao section-padding">
         <div class="container">
+            <h3 style="text-align: center;color: red">Update Your Profile</h3>
             <div class="row">
-                <div class="col-lg-4 col-md-8 m-auto">
-                	<div class="login-page-content">
-                		<div class="login-form">
-                			<h3>Welcome Back!</h3>
-							<form action="" method="post" name="changepassword" onsubmit="return checkpass();" id="changepassword">
-                                <p style="font-size:16px; color:red" align="center"> <?php if($msg){
+
+                <div class="col-lg-10 m-auto">
+                    <div class="contact-form">
+
+                        <?php
+$uid=$_SESSION['vrmsuid'];
+$ret=mysqli_query($con,"select * from  tbluser where ID='$uid'");
+$cnt=1;
+while ($row=mysqli_fetch_array($ret)) {
+
+?>
+
+                        <form class="mb-0" method="post">
+                            <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
   }  ?> </p>
-								<div class="username">
-									<input type="password"placeholder="New Password" name="newpassword" id="newpassword" required="true">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-6">
+                                    <div class="name-input">
+                                       
+                                       <input type="text" value="<?php  echo $row['FirstName'];?>" id="fname" name="fname" required="true">
+                                    </div>
+                                </div></div>
+                          <div class="row" style="padding-top: 20px">
+                                <div class="col-lg-12 col-md-6">
+                                    <div class="email-input">
+                                        <input type="text" value="<?php  echo $row['LastName'];?>" id="lname" name="lname" required="true">
+                                    </div>
+                                </div>
+                            </div>
 
-								</div>
-								<div class="password">
-									<input type="password" placeholder="Confirm Password" name="confirmpassword" id="confirmpassword" required="true">
-								</div>
-								<div class="log-btn">
-									<button type="submit" name="submit"><i class="fa fa-sign-in"></i> Reset</button>
-								</div>
-							</form>
-                		</div>
-                		
-                		<div class="login-other">
-                			<span class="or">or</span>
-                			<a href="loginb.php" class="login-with-btn facebook"> login</a>
-                			</div>
-                		<div class="create-ac">
-                			<p>Don't have an account? <a href="register.php">Sign Up</a></p>
-                		</div>
-                		<div class="login-menu">
-                			<a href="about.php">About</a>
-                			<span>|</span>
-                			<a href="contact.php">Contact</a>
-                		</div>
-                	</div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-6">
+                                    <div class="website-input">
+                                         <input type="email" value="<?php  echo $row['Email'];?>" id="email" name="email" readonly="true">
+                                    </div>
+                                </div>
+
+                                 </div>
+                                 <div class="row">
+                                <div class="col-lg-12 col-md-6">
+                                    <div class="website-input">
+                                         <input  type="text" value="<?php  echo $row['MobileNumber'];?>" id="mobilenumber" name="mobilenumber" required="true">
+                                    </div>
+                                </div>
+
+                                 </div>
+<?php }?>
+                            <div class="input-submit">
+                                <button type="submit" name="submit">Update</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-        	</div>
+            </div>
         </div>
-    </section>
-    <!--== Login Page Content End ==-->
+    </div>
+    <!--== Contact Page Area End ==-->
 
-  <?php include_once('includes/footer.php');?>
-
+   
+   <?php include_once('includes/footer.php');?>
     <!--== Scroll Top Area Start ==-->
     <div class="scroll-top">
         <img src="assets/img/scroll-top.png" alt="JSOFT">
@@ -185,3 +200,4 @@ return true;
 </body>
 
 </html>
+<?php }  ?>

@@ -1,32 +1,19 @@
 <?php
 session_start();
-error_reporting(0);
 include('includes/dbconnection.php');
 error_reporting(0);
+if (strlen($_SESSION['vrmsuid']==0)) {
+  header('location:logout.php');
+  } else{
 
-if(isset($_POST['submit']))
-  {
-    $contactno=$_SESSION['contactno'];
-    $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
-
-        $query=mysqli_query($con,"update tbluser set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-   if($query)
-   {
-echo "<script>alert('Password successfully changed');</script>";
-session_destroy();
-   }
   
-  }
-  ?>
-
+?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 <head>
-   
-
-    <title>Vehicle Rental Management System || Reset Password</title>
+    
+    <title>Vehicle Rental Management System || Four Wheeler Booking Detail</title>
 
     <!--=== Bootstrap CSS ===-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -46,25 +33,19 @@ session_destroy();
     <link href="style.css" rel="stylesheet">
     <!--=== Responsive CSS ===-->
     <link href="assets/css/responsive.css" rel="stylesheet">
-
-
-    <!--[if lt IE 9]>
-        <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript">
-function checkpass()
+<script language="javascript" type="text/javascript">
+var popUpWin=0;
+function popUpWindow(URLStr, left, top, width, height)
 {
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
+ if(popUpWin)
 {
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
+if(!popUpWin.closed) popUpWin.close();
 }
-return true;
-} 
+popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=yes,width='+700+',height='+600+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+}
 
 </script>
+    
 </head>
 
 <body class="loader-active">
@@ -88,9 +69,9 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Reset Password</h2>
+                        <h2>Booking Deatails of #<?php echo $bid=$_GET['bookingid'];?></h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+
                     </div>
                 </div>
                 <!-- Page Title End -->
@@ -99,52 +80,138 @@ return true;
     </section>
     <!--== Page Title Area End ==-->
 
-    <!--== Login Page Content Start ==-->
-    <section id="lgoin-page-wrap" class="section-padding">
+    <!--== Contact Page Area Start ==-->
+    <div class="contact-page-wrao section-padding">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-8 m-auto">
-                	<div class="login-page-content">
-                		<div class="login-form">
-                			<h3>Welcome Back!</h3>
-							<form action="" method="post" name="changepassword" onsubmit="return checkpass();" id="changepassword">
-                                <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-								<div class="username">
-									<input type="password"placeholder="New Password" name="newpassword" id="newpassword" required="true">
+                <div class="col-lg-10 m-auto">
+                    <div class="contact-form">
+<?php  $bid=$_GET['bookingid'];?> 
 
-								</div>
-								<div class="password">
-									<input type="password" placeholder="Confirm Password" name="confirmpassword" id="confirmpassword" required="true">
-								</div>
-								<div class="log-btn">
-									<button type="submit" name="submit"><i class="fa fa-sign-in"></i> Reset</button>
-								</div>
-							</form>
-                		</div>
-                		
-                		<div class="login-other">
-                			<span class="or">or</span>
-                			<a href="loginb.php" class="login-with-btn facebook"> login</a>
-                			</div>
-                		<div class="create-ac">
-                			<p>Don't have an account? <a href="register.php">Sign Up</a></p>
-                		</div>
-                		<div class="login-menu">
-                			<a href="about.php">About</a>
-                			<span>|</span>
-                			<a href="contact.php">Contact</a>
-                		</div>
-                	</div>
+
+
+ <div class="row">
+ <div class="col-lg-12">
+<?php
+//Getting Url
+
+
+// Getting order Details
+$userid= $_SESSION['vrmsuid'];
+$ret=mysqli_query($con,"select BookingDate,Status,CreationDate from tblbookingcar where UserId='$userid' and BookingNumber='$bid'");
+while($result=mysqli_fetch_array($ret)) {
+?>
+
+<table class="table table-bordered" >
+<tr>
+<th>Booking Number</th>
+<td><?php echo $bid?></td>
+</tr>
+
+<tr>
+<th>Booking Date</th>
+<td><?php echo $od=$result['CreationDate'];?></td>
+</tr>
+
+<tr>
+<th>Booking Status</th>
+<td><?php if($result['Status']==""){
+    echo "Not Response Yet";
+} else {
+echo $result['Status'];
+}?> </td>
+</tr>
+</table>
+
+
+
+
+<?php } ?>
+
+<p>
+ <a href="javascript:void(0);" onClick="popUpWindow('fw-invoice.php?invid=<?php echo $bid;?>');" title="Booking Invoice"  class="btn btn-primary btn-sm">  Invoice</a></p>
+
+
+ </div>
+ </div> 
+
+<div class="row" style="margin-top:1%">
+ <div class="col-lg-12">
+
+        <?php 
+ $query=mysqli_query($con,"select DATEDIFF(tblbookingcar.ReturnDate,tblbookingcar.BookingDate) as ddf,tblvehiclecar.Image,tblvehiclecar.VehicleName,tblvehiclecar.RentalPrice,tblbookingcar.FullName,tblbookingcar.BookingNumber,tblbookingcar.BookingDate,tblbookingcar.ReturnDate,tblbookingcar.TotalCost,tblbookingcar.Remark,tblbookingcar.Status,tblbookingcar.RemarkDate,tblbookingcar.CreationDate from tblvehiclecar join tblbookingcar on tblvehiclecar.ID=tblbookingcar.VehicleID where tblbookingcar.Userid='$userid' and tblbookingcar.BookingNumber=$bid");
+$num=mysqli_num_rows($query);
+if($num>0){
+    $cnt=1;
+
+?>
+<table class="table table-bordered" >
+
+    <?php   
+while ($row=mysqli_fetch_array($query)) {
+    ?>
+    <tr>
+
+<th>From  Date</th>
+<td><?php echo $row['BookingDate'];?></td>
+<th>To  Date</th>
+<td><?php echo $row['ReturnDate'];?></td>
+
+
+
+
+
+</tr>
+
+
+
+
+<tr>
+<th>Vehicle Name</th>    
+<td><?php echo $row['VehicleName'];?></td>  
+
+<th>Vehicle Image</th>  
+<td>
+<img class="b-goods-f__img img-scale" src="admin/images/<?php echo $row['Image'];?>" alt="<?php echo $row['Image'];?>" width='300' height='250'></td>
+
+</tr>
+<tr>
+<th>Rental Price</th>  
+<td><?php echo $rpice=$row['RentalPrice'];?>  </td> 
+<th>Total Price</th>  
+<td>Rs. <?php
+$d1=$row['ddf'];;
+
+ echo $total=$d1*$rpice;?></td>
+ <?php 
+                    }        
+ ?> 
+</td>
+    
+</tr>
+<?php } ?>
+
+</table>
+
+<p>
+
+
+ 
+    <p style="color:red">
+        <a href="four-wheeler-booking.php" title="Back" style="color:red">Back </a>
+    </p>
+
+
                 </div>
-        	</div>
+            </div>         </div>
+                </div>
+            </div>
         </div>
-    </section>
-    <!--== Login Page Content End ==-->
+    </div>
+    <!--== Contact Page Area End ==-->
 
-  <?php include_once('includes/footer.php');?>
-
+   
+   <?php include_once('includes/footer.php');?>
     <!--== Scroll Top Area Start ==-->
     <div class="scroll-top">
         <img src="assets/img/scroll-top.png" alt="JSOFT">
@@ -185,3 +252,4 @@ return true;
 </body>
 
 </html>
+<?php }  ?>

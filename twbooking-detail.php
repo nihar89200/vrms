@@ -5,24 +5,6 @@ error_reporting(0);
 if (strlen($_SESSION['vrmsuid']==0)) {
   header('location:logout.php');
   } else{
-if(isset($_POST['submit']))
-{
-$uid=$_SESSION['vrmsuid'];
-$cpassword=md5($_POST['currentpassword']);
-$newpassword=md5($_POST['newpassword']);
-$query=mysqli_query($con,"select ID from tbluser where ID='$uid' and   Password='$cpassword'");
-$row=mysqli_fetch_array($query);
-if($row>0){
-$ret=mysqli_query($con,"update tbluser set Password='$newpassword' where ID='$uid'");
-$msg= "Your password successully changed"; 
-} else {
-
-$msg="Your current password is wrong";
-}
-
-
-
-}
 
   
 ?>
@@ -51,20 +33,19 @@ $msg="Your current password is wrong";
     <link href="style.css" rel="stylesheet">
     <!--=== Responsive CSS ===-->
     <link href="assets/css/responsive.css" rel="stylesheet">
-
-    <script type="text/javascript">
-function checkpass()
+<script language="javascript" type="text/javascript">
+var popUpWin=0;
+function popUpWindow(URLStr, left, top, width, height)
 {
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
+ if(popUpWin)
 {
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
+if(!popUpWin.closed) popUpWin.close();
 }
-return true;
-} 
+popUpWin = open(URLStr,'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=yes,width='+700+',height='+600+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+}
 
 </script>
+    
 </head>
 
 <body class="loader-active">
@@ -88,7 +69,7 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Change Password</h2>
+                        <h2>Booking Details #<?php echo $_GET['bookingid'];?> </h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
                     </div>
                 </div>
@@ -104,45 +85,127 @@ return true;
             <div class="row">
                 <div class="col-lg-10 m-auto">
                     <div class="contact-form">
-                        <?php
-$uid=$_SESSION['vrmsuid'];
-$ret=mysqli_query($con,"select * from  tbluser where ID='$uid'");
-$cnt=1;
-while ($row=mysqli_fetch_array($ret)) {
+<b>#<?php echo $bid=$_GET['bookingid'];?> Booking Details</b>
+
+
+
+ <div class="row">
+ <div class="col-lg-12">
+<?php
+
+// Getting order Details
+$userid= $_SESSION['vrmsuid'];
+$ret=mysqli_query($con,"select CreationDate,Status from tblbookingtwowheeler where UserId='$userid' and BookingNumber='$bid'");
+while($result=mysqli_fetch_array($ret)) {
+?>
+
+<table class="table table-bordered" >
+<tr>
+    <th>Booking No</th>
+    <td>#<?php echo $bid?></td>
+</tr>
+
+<tr>
+    <th>Booking Date</th>
+    <td><?php echo $od=$result['CreationDate'];?></td>
+</tr>
+
+
+<tr>
+    <th>Booking Status</th>
+    <td><?php if($result['Status']==""){
+    echo "Not Response Yet";
+} else {
+echo $result['Status'];
+}?></td>
+</tr>
+
+
+<tr>
+    <td colspan="2"> <a href="javascript:void(0);" onClick="popUpWindow('tw-invoice.php?invid=<?php echo $bid;?>');" title="Booking Invoice" style="color:#000" class="btn btn-primary btn-xs">  Invoice</a></td>
+</tr>
+</table>
+<?php } ?>
+<!-- Invoice -->
+
+
+
+ </div>
+ </div> 
+
+            <div class="row" style="margin-top:1%">
+ <div class="col-lg-12">
+
+        <?php 
+ $query=mysqli_query($con,"select DATEDIFF(tblbookingtwowheeler.ReturnDate,tblbookingtwowheeler.BookingDate) as ddf,tblvehicle.Image,tblvehicle.VehicleName,tblvehicle.RentalPrice,tblbookingtwowheeler.FullName,tblbookingtwowheeler.BookingNumber,tblbookingtwowheeler.BookingDate,tblbookingtwowheeler.ReturnDate,tblbookingtwowheeler.TotalCost,tblbookingtwowheeler.Remark,tblbookingtwowheeler.Status,tblbookingtwowheeler.RemarkDate,tblbookingtwowheeler.CreationDate from tblvehicle join tblbookingtwowheeler on tblvehicle.ID=tblbookingtwowheeler.VehicleID where tblbookingtwowheeler.Userid='$userid' and tblbookingtwowheeler.BookingNumber=$bid");
+$num=mysqli_num_rows($query);
+if($num>0){
+    $cnt=1;
 
 ?>
-                        <form class="mb-0" method="post" name="changepassword" onsubmit="return checkpass();">
-                            <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="name-input">
-                                        <input type="password" name="currentpassword" id="currentpassword"  required='true' placeholder="Current Password">
-                                    </div>
-                                </div></div>
-                          <div class="row" style="padding-top: 20px">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="email-input">
-                                        <input type="password" name="newpassword" id="newpassword" required='true' placeholder="New Password">
-                                    </div>
-                                </div>
-                            </div>
+<table class="table table-bordered" >
+    <tr>
 
-                            <div class="row">
-                                <div class="col-lg-12 col-md-6">
-                                    <div class="website-input">
-                                         <input type="password" name="confirmpassword" id="confirmpassword" value="" required='true' placeholder="Confirm Password">
-                                    </div>
-                                </div>
 
-                                 </div>
-<?php }?>
-                            <div class="input-submit">
-                                <button type="submit" name="submit">Change</button>
-                            </div>
-                        </form>
-                    </div>
+
+
+
+
+  
+
+
+</tr>
+<?php   
+while ($row=mysqli_fetch_array($query)) {
+    ?>
+
+
+
+<tr>
+<th>From  Date</th>
+<td><?php echo $row['BookingDate'];?></td>
+<th>To Date</th>
+<td><?php echo $row['ReturnDate'];?></td>
+</tr>
+<tr>
+    <th>Vehicle Name</th>    
+<td><?php echo $row['VehicleName'];?></td>  
+<th>Vehicle Image</th>  
+<td>
+<img class="b-goods-f__img img-scale" src="admin/images/<?php echo $row['Image'];?>" alt="<?php echo $row['Image'];?>" width='300' height='200'></td>
+</tr>
+<tr>
+    <th>Rental Price</th> 
+<td><?php echo $rpice=$row['RentalPrice'];?>  </td> 
+<th>Total Price</th>  
+<td>Rs. <?php
+$d1=$row['ddf'];;
+
+ echo $total=$d1*$rpice;?></td>
+</tr>
+ <?php 
+
+$cnt=$cnt+1; 
+                    }        
+ ?> 
+</td>
+    
+</tr>
+<?php } ?>
+
+</table>
+
+<p>
+
+
+ 
+    <p style="color:red">
+        <a href="two-wheeler-booking.php" title="Back" style="color:red">Back </a>
+    </p>
+
+
+                </div>
+            </div>         </div>
                 </div>
             </div>
         </div>

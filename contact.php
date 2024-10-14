@@ -1,32 +1,15 @@
 <?php
 session_start();
 error_reporting(0);
+
 include('includes/dbconnection.php');
-error_reporting(0);
-
-if(isset($_POST['submit']))
-  {
-    $contactno=$_SESSION['contactno'];
-    $email=$_SESSION['email'];
-    $password=md5($_POST['newpassword']);
-
-        $query=mysqli_query($con,"update tbluser set Password='$password'  where  Email='$email' && MobileNumber='$contactno' ");
-   if($query)
-   {
-echo "<script>alert('Password successfully changed');</script>";
-session_destroy();
-   }
-  
-  }
-  ?>
-
+?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 
 <head>
-   
-
-    <title>Vehicle Rental Management System || Reset Password</title>
+    
+    <title>Vehicle Rental Management System - Contact Us</title>
 
     <!--=== Bootstrap CSS ===-->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
@@ -52,19 +35,6 @@ session_destroy();
         <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript">
-function checkpass()
-{
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
-{
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
-}
-return true;
-} 
-
-</script>
 </head>
 
 <body class="loader-active">
@@ -88,9 +58,8 @@ return true;
                 <!-- Page Title Start -->
                 <div class="col-lg-12">
                     <div class="section-title  text-center">
-                        <h2>Reset Password</h2>
+                        <h2>Contact Us</h2>
                         <span class="title-line"><i class="fa fa-car"></i></span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                     </div>
                 </div>
                 <!-- Page Title End -->
@@ -99,49 +68,62 @@ return true;
     </section>
     <!--== Page Title Area End ==-->
 
-    <!--== Login Page Content Start ==-->
-    <section id="lgoin-page-wrap" class="section-padding">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-8 m-auto">
-                	<div class="login-page-content">
-                		<div class="login-form">
-                			<h3>Welcome Back!</h3>
-							<form action="" method="post" name="changepassword" onsubmit="return checkpass();" id="changepassword">
-                                <p style="font-size:16px; color:red" align="center"> <?php if($msg){
-    echo $msg;
-  }  ?> </p>
-								<div class="username">
-									<input type="password"placeholder="New Password" name="newpassword" id="newpassword" required="true">
+    <!--== Contact Page Area Start ==-->
+    <div class="contact-page-wrao section-padding">
+        <?php 
+ $query=mysqli_query($con,"select * from  tblpage where PageType='contactus'");
+ while ($row=mysqli_fetch_array($query)) {
 
-								</div>
-								<div class="password">
-									<input type="password" placeholder="Confirm Password" name="confirmpassword" id="confirmpassword" required="true">
-								</div>
-								<div class="log-btn">
-									<button type="submit" name="submit"><i class="fa fa-sign-in"></i> Reset</button>
-								</div>
-							</form>
-                		</div>
-                		
-                		<div class="login-other">
-                			<span class="or">or</span>
-                			<a href="loginb.php" class="login-with-btn facebook"> login</a>
-                			</div>
-                		<div class="create-ac">
-                			<p>Don't have an account? <a href="register.php">Sign Up</a></p>
-                		</div>
-                		<div class="login-menu">
-                			<a href="about.php">About</a>
-                			<span>|</span>
-                			<a href="contact.php">Contact</a>
-                		</div>
-                	</div>
-                </div>
-        	</div>
-        </div>
-    </section>
-    <!--== Login Page Content End ==-->
+
+ ?>
+        <div class="container">
+                        <div class="address row mb-5">
+                            <div class="col-lg-4 address-grid">
+                                <div class="row address-info">
+                                    <div class="col-md-3 address-left text-center">
+                                        <i class="fa fa-map-marker"></i>
+                                    </div>
+                                    <div class="col-md-9 address-right text-left">
+                                        <h6 class="ad-info text-uppercase mb-2">Address</h6>
+                                        <p> <?php  echo $row['PageDescription'];?>
+        
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 address-grid">
+                                <div class="row address-info">
+                                    <div class="col-md-3 address-left text-center">
+                                        <i class="fa fa-envelope"></i>
+                                    </div>
+                                    <div class="col-md-9 address-right text-left">
+                                        <h6 class="ad-info text-uppercase mb-2">Email</h6>
+                                        <p>Email :<?php  echo $row['Email'];?></p>
+                                    </div>
+        
+                                </div>
+                            </div>
+                            <div class="col-lg-4 address-grid">
+                                <div class="row address-info">
+                                    <div class="col-md-3 address-left text-center">
+                                        <i class="fa fa-mobile"></i>
+                                    </div>
+                                    <div class="col-md-9 address-right text-left">
+                                        <h6 class="ad-info text-uppercase mb-2">Phone</h6>
+                                        <p>+<?php  echo $row['MobileNumber'];?></p>
+        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
+    </div>
+    <!--== Contact Page Area End ==-->
+
+    <!--== Map Area Start ==-->
+
+    <!--== Map Area End ==-->
 
   <?php include_once('includes/footer.php');?>
 
